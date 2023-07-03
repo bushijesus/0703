@@ -1,0 +1,182 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAXSIZE 10
+
+// 定义双链表结点类型
+typedef struct DNode{
+    int data;
+    struct DNode * prior, * next;
+}DNode, *DLinklist;
+
+typedef int status;
+
+// 定义一个静态链表
+typedef struct Node{
+    int data;
+    int next;
+}SLinklist[MAXSIZE];    // MAXSIZE 为 10
+
+// 判断双链表是否为空
+status DlinklistEmpty(DLinklist L) {
+    if (L->next == NULL)
+        return 1;
+    else
+        return 0;
+}
+
+// 在p结点之后插入s结点
+status insertNextDNode(DNode *p, DNode *s){
+    if(p == NULL || s == NULL)
+        return -1;
+    s->next = p->next;
+    p->next->prior = s;
+    s->prior  = p;
+    p->next = s;
+}
+
+// 删除p结点的后继结点
+status delNextDNode(DNode *p){
+    if(p == NULL)
+        return -1;
+    DNode* q = p->next;
+    if(q == NULL)
+        return -1;
+    p->next = q->next;
+    if(q->next != NULL){
+        q->next->prior = p;
+    }
+    free(q);
+    return 1;
+}
+
+// 销毁双链表
+void destroyDlinklist(DLinklist L){
+    // 循环释放各个数据结点
+    while (L->next != NULL){
+        delNextDNode(L);
+    }
+    free(L);   // 释放头结点
+    L = NULL;          // 头指针置空
+}
+
+// 初始化循环双链表
+status initCircDLinklist(DLinklist L){
+    L = (DNode *) malloc(sizeof (DNode));   // 分配一个头结点
+    if(L == NULL){
+        return -1;
+    }
+    L->prior = L;    // 头结点的 prior 指针指向头结点
+    L->next = L;     // 头结点的 next 指针指向头结点
+    return 1;
+}
+
+// 初始化静态链表
+void initSLinklist(SLinklist S){
+    for (int i = 0; i < MAXSIZE - 1; ++i) {
+        S[i].data =  0;
+        S[i].next = i + 1;
+    }
+    S[MAXSIZE - 1].data = 0;
+    S[MAXSIZE - 1].next = -1;
+}
+
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+#define PI 3.14
+// 设计一个圆类，求圆的周长
+class Circle{
+    // 访问权限  -- 公共权限
+    public:
+    // 属性   -- 半径
+        int c_r;
+        // 行为   -- 求周长
+        double calcCircum(){
+            return 2 * PI * c_r;
+        }
+};
+
+class Student{
+    public:
+        string name;    // 姓名
+        int id;         // 学号
+        void printInfo(){    // 显示信息
+            cout << "name: " << name << " id: " << id << endl;
+        }
+        void setName(string iname){   // 设置姓名
+            name = iname;
+        }
+};
+
+class Person{
+    public:
+    // 公共权限
+        string name;
+    protected:
+    // 保护权限
+        string car;
+    private:
+    // 私有权限
+        int password;
+};
+
+class Human{
+    public:
+        // 设置姓名
+        void setName(string name){
+            Name = name;
+        }
+        // 获取姓名
+        string getName(){
+            return Name;
+        }
+        // 获取年龄
+        int getAge(){
+            Age = 18;     // 初始化为18岁
+            return Age;
+        }
+        // 设置情人
+        void setLover(string lover){
+            Lover = lover;
+        }
+    private:
+        // 姓名  可读可写
+        string Name;
+        // 年龄 只读
+        int Age;
+        // 情人 只写
+        string Lover;
+};
+int main(){
+    // // 通过圆类创建具体的圆（对象）   -- 实例化
+    //     Circle c1;
+    // // 给圆对象的属性进行赋值
+    //     c1.c_r = 10;
+    //     cout << "the circumstance of c1 is : " << c1.calcCircum() << endl;
+
+        // Student s1;            // 实例化对象
+        // s1.name = "zhangsan";  // 属性赋值 
+        // s1.id = 114514;
+        // s1.printInfo();        // 显示学生信息
+
+        // Student s2;
+        // s2.setName("lisi");
+        // s2.id = 987654;
+        // s2.printInfo();
+
+//         Person p1;
+//         p1.name = "zhangsan";
+//         p1.car = "BMW";         // 报错  类外不可以访问
+//         p1.password = 987654;   // 报错  类外不可以访问
+
+    Human h1;
+    
+    h1.setName("wangwu");
+    cout << "name :" << h1.getName() << endl;
+
+    cout << "age :" << h1.getAge() << endl;
+
+    h1.setLover("cq");
+}
